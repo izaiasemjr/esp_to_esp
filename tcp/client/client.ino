@@ -1,22 +1,4 @@
-/*
-    This sketch sends a string to a TCP server, and prints a one-line response.
-    You must run a TCP server in your local network.
-    For example, on Linux you can use this command: nc -v -l 3000
-*/
-
-#include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
-
-#ifndef STASSID
-#define STASSID "IZAIAS 2702"
-#define STAPSK  "27023025"
-#endif
-
-const char* ssid     = STASSID;
-const char* password = STAPSK;
-
-const char* host = "192.168.5.10";
-const uint16_t port = 80;
+#include "config.h"
 
 ESP8266WiFiMulti WiFiMulti;
 
