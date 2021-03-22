@@ -42,29 +42,29 @@ void setup() {
   Serial.println(WiFi.localIP());
 }
 
-void loop() 
+void loop()
 {
   WiFiClient client = server.available();
-  
+
   if (client) {
-    if(client.connected())
+    if (client.connected())
     {
       Serial.println("Client Connected");
     }
-    
-    while(client.connected()){      
-      while(client.available()>0){
+
+    while (client.connected()) {
+      while (client.available() > 0) {
         // read data from the connected client
-        Serial.write(client.read()); 
+        Serial.write(client.read());
       }
       //Send Data to connected client
-      while(Serial.available()>0)
+      while (Serial.available() > 0)
       {
         client.write(Serial.read());
       }
     }
     client.stop();
-    Serial.println("Client disconnected");    
+    Serial.println("Client disconnected");
   }
 }
 
