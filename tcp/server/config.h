@@ -6,8 +6,8 @@
 #endif
 
 // Set your Static IP address
-IPAddress server_IP(192, 168, 5, 10);
-IPAddress gateway(192, 168, 5, 1);
+IPAddress server_IP(192, 168, 0, 10);
+IPAddress gateway(192, 168, 0, 1);
 IPAddress subnet(255, 255, 255, 0);
 IPAddress primaryDNS(8, 8, 8, 8);   //optional
 IPAddress secondaryDNS(8, 8, 4, 4);
