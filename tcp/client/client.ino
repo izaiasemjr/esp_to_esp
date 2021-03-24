@@ -1,6 +1,11 @@
 #include "config.h"
+#define PIN_ENTRADA 2
+#define TIME_INTERVAL 5
 
+int statePinEntrada;
 ESP8266WiFiMulti WiFiMulti;
+WiFiClient client;
+
 
 void setup() {
   Serial.begin(115200);
@@ -9,51 +14,68 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFiMulti.addAP(ssid, password);
 
-  Serial.println();
-  Serial.println();
   Serial.print("Wait for WiFi... ");
-
   while (WiFiMulti.run() != WL_CONNECTED) {
     Serial.print(".");
     delay(500);
   }
-
   Serial.println("");
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
+ // setup pins
+  pinMode(PIN_ENTRADA, INPUT);
+  statePinEntrada = digitalRead(PIN_ENTRADA);
+  sendState();
+  
   delay(500);
 }
 
 
-void loop() {
+
+void sendState() {
   Serial.print("connecting to ");
   Serial.print(host);
   Serial.print(':');
   Serial.println(port);
 
+  int stateTemp = digitalRead(PIN_ENTRADA);
+
   // Use WiFiClient class to create TCP connections
   WiFiClient client;
 
-  if (!client.connect(host, port)) {
-    Serial.println("connection failed");
-    Serial.println("wait 5 sec...");
-    delay(5000);
-    return;
+  if (client.connect(host, port)) {
+    // This will send the request to the server
+    String msg =  "#" + String(PIN_ENTRADA) + String(stateTemp) + String("#");
+
+    client.println(msg);
+    Serial.println("data sent");
+
+    statePinEntrada = stateTemp;
+
+    Serial.println("closing connection");
+    client.stop();
+  } else {
+    Serial.print("Not Connected.");
+  }
+}
+
+unsigned long previousMillis = 0;        // will store last time LED was updated
+const long interval = TIME_INTERVAL;
+
+void loop() {
+
+
+  if (digitalRead(PIN_ENTRADA) != statePinEntrada) {
+    sendState();
   }
 
-  // This will send the request to the server
-  client.print("/inline");
 
-  //read back one line from server
-  Serial.println("receiving from remote server:");
-  String line = client.readStringUntil('\r');
-  Serial.println(line);
-
-  Serial.println("closing connection");
-  client.stop();
-
-  Serial.println("wait 5 sec...");
-  delay(5000);
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    // save the last time you blinked the LED
+    previousMillis = currentMillis;
+    sendState();
+  }
 }

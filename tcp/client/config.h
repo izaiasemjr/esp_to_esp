@@ -6,9 +6,7 @@
 #define STAPSK  "7AVqt9RcXX"
 #endif
 
-
 const char* host = "192.168.0.10";
 const uint16_t port = 80;
-
 const char* ssid     = STASSID;
 const char* password = STAPSK;
